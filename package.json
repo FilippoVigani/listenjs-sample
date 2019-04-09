@@ -1,0 +1,28 @@
+{
+  "name": "listenjs-sample",
+  "version": "1.0.0",
+  "description": "Sample application using listen js",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --mode=development"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VeegaP/listenjs-sample.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/VeegaP/listenjs-sample/issues"
+  },
+  "homepage": "https://github.com/VeegaP/listenjs-sample#readme",
+  "devDependencies": {
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.3.0"
+  },
+  "dependencies": {
+    "@filippovigani/listenjs": "^0.0.5"
+  }
+}
