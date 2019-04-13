@@ -1,28 +1,28 @@
 {
-  "name": "listenjs-sample",
+  "name": "server",
   "version": "1.0.0",
-  "description": "Sample application using listen js",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack --mode=development"
+  "description": "",
+  "main": "app.js",
+  "directories": {
+    "test": "test"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/VeegaP/listenjs-sample.git"
+  "scripts": {
+    "test": "tap test/**/*.test.js",
+    "start": "fastify start -l info app.js",
+    "dev": "fastify start -l info -P app.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/VeegaP/listenjs-sample/issues"
-  },
-  "homepage": "https://github.com/VeegaP/listenjs-sample#readme",
-  "devDependencies": {
-    "webpack": "^4.29.6",
-    "webpack-cli": "^3.3.0"
-  },
   "dependencies": {
-    "@filippovigani/listenjs": "^0.0.5"
+    "fastify": "^2.0.0",
+    "fastify-autoload": "^0.6.0",
+    "fastify-cli": "^1.0.0",
+    "fastify-plugin": "^1.5.0",
+    "fastify-static": "^2.4.0",
+    "socket.io": "^2.2.0"
+  },
+  "devDependencies": {
+    "tap": "^12.5.3"
   }
 }
