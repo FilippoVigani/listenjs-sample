@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { listen } from '@filippovigani/listenjs';
+import io from 'socket.io-client';
 import style from './test-chat.css';
 
 class TestChat extends React.Component {
@@ -16,6 +17,7 @@ class TestChat extends React.Component {
 
 	componentDidMount() {
 		this.listener = listen('wss://echo.websocket.org');
+
 		this.listener.onerror = () => {
 			this.setState(state => ({ ...state, status: 'Error!' }));
 		};
@@ -35,6 +37,17 @@ class TestChat extends React.Component {
 				status: 'Disconnected from websocket :('
 			}));
 		};
+
+		const socket = io();
+
+		socket.on('message', payload => {
+			const message = { text: payload, status: 'received' };
+			this.setState(state => ({
+				...state,
+				messages: [...state.messages, message]
+			}));
+		});
+
 		this.setState(state => ({ ...state, status: 'Connecting...' }));
 	}
 
