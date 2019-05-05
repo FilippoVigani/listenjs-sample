@@ -69,11 +69,18 @@ class Todos extends React.Component {
 
 	handleSubmit(event) {
 		const { text, todos } = this.state;
-		this.listener.socket.send(text);
+		//this.listener.socket.send(text);
+
+		const todo = {text: text, status: 'todo'}
+
+		fetch("/api/todos", {
+			method: 'POST',
+			body: JSON.stringify(todo)
+		})
 
 		this.setState(state => ({
 			...state,
-			todos: [...todos, { text: text, status: 'todo' }],
+			todos: [...todos, todo],
 			text: ''
 		}));
 		event.preventDefault();
