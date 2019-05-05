@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { hot } from 'react-hot-loader/root';
-import TestChat from './components/test-chat';
+import Todos from './components/test-chat';
 
 class App extends Component {
 	constructor(props) {
@@ -9,7 +9,7 @@ class App extends Component {
 	}
 
 	render() {
-		return <TestChat title="Hello Listen js" />;
+		return <Todos title="Hello Listen js" />;
 	}
 }
 

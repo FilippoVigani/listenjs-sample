@@ -1,0 +1,36 @@
+{
+  "extends": [
+    "eslint:recommended"
+  ],
+  "globals": {
+  },
+  "root": true,
+  "rules": {
+    "indent": [
+      "error",
+      "tab"
+    ],
+    "no-trailing-spaces": [
+      2,
+      {
+        "skipBlankLines": true
+      }
+    ],
+    "prefer-template": 0,
+    "import/prefer-default-export": 0,
+    "import/no-unresolved": 0,
+    "import/no-extraneous-dependencies": 0,
+    "import/extensions": 0,
+    "babel/object-curly-spacing": 0
+  },
+  "env": {
+    "es6": true,
+    "jest": true,
+    "browser": true,
+    "node": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 9,
+    "sourceType": "module"
+  }
+}

@@ -1,11 +1,11 @@
 'use strict'
 
 module.exports = function (fastify, opts, next) {
-  fastify.get('/', function (request, reply) {
-	  reply.sendFile('index.html')
-  })
+	fastify.get('/', function (request, reply) {
+		reply.sendFile('index.html')
+	})
 
-  next()
+	next()
 }
 
 // If you prefer async/await, use the following

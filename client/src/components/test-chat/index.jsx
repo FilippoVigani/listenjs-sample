@@ -4,14 +4,14 @@ import { listen } from '@filippovigani/listenjs';
 import io from 'socket.io-client';
 import style from './test-chat.css';
 
-class TestChat extends React.Component {
+class Todos extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			title: props.title,
 			status: '',
 			text: '',
-			messages: []
+			todos: []
 		};
 	}
 
@@ -25,10 +25,10 @@ class TestChat extends React.Component {
 			this.setState(state => ({ ...state, status: 'Connected!' }));
 		};
 		this.listener.onupdate = payload => {
-			const message = { text: payload, status: 'received' };
+			const message = { text: payload, status: 'todo' };
 			this.setState(state => ({
 				...state,
-				messages: [...state.messages, message]
+				todos: [...state.todos, message]
 			}));
 		};
 		this.listener.ondisconnected = () => {
@@ -41,12 +41,21 @@ class TestChat extends React.Component {
 		const socket = io();
 
 		socket.on('message', payload => {
-			const message = { text: payload, status: 'received' };
+			const message = { text: payload, status: 'todo' };
 			this.setState(state => ({
 				...state,
-				messages: [...state.messages, message]
+				todos: [...state.todos, message]
 			}));
 		});
+
+		fetch("/api/todos")
+			.then(response => response.json())
+			.then(data => {
+				this.setState(state => ({
+					...state,
+					todos: data
+				}))
+			})
 
 		this.setState(state => ({ ...state, status: 'Connecting...' }));
 	}
@@ -59,29 +68,29 @@ class TestChat extends React.Component {
 	}
 
 	handleSubmit(event) {
-		const { text, messages } = this.state;
+		const { text, todos } = this.state;
 		this.listener.socket.send(text);
 
 		this.setState(state => ({
 			...state,
-			messages: [...messages, { text: text, status: 'sent' }],
+			todos: [...todos, { text: text, status: 'todo' }],
 			text: ''
 		}));
 		event.preventDefault();
 	}
 
 	render() {
-		const { status, messages, title, text } = this.state;
+		const { status, todos, title, text } = this.state;
 		return (
 			<div className={style.pageWrapper}>
 				<h1>{title}</h1>
 				<div className={style.status}>{status}</div>
-				<ul className={style.messages}>
-					{messages.map(item => (
+				<ul className={style.todos}>
+					{todos.map(item => (
 						<li
 							key={item}
-							className={item.status === 'sent' ? style.sent : style.received}>
-							<span>{item.status === 'sent' ? 'Sent: ' : 'Received: '}</span>
+							className={item.status === 'done' ? style.done : style.todo}>
+							<span>{item.status === 'done' ? 'Done: ' : 'TODO: '}</span>
 							{item.text}
 						</li>
 					))}
@@ -93,10 +102,10 @@ class TestChat extends React.Component {
 					<textarea
 						className={style.message}
 						value={text}
-						placeholder="Write your message here..."
+						placeholder="Write your todo here..."
 						onChange={e => this.handleMessageChange(e)}
 						required />
-					<button type="submit">Send Message</button>
+					<button type="submit">Add Todo</button>
 					<button type="button" className="close">Close Connection</button>
 				</form>
 			</div>
@@ -104,8 +113,8 @@ class TestChat extends React.Component {
 	}
 }
 
-TestChat.propTypes = {
+Todos.propTypes = {
 	title: PropTypes.string
 };
 
-export default TestChat;
+export default Todos;

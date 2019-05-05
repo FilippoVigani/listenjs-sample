@@ -56,11 +56,12 @@ ul li span {
   letter-spacing: 1px;
 }
 
-.sent {
-  background-color: #f7f7f7;
+.done {
+  background-color: #86f77c;
 }
 
-.received {
+.todo {
+  background-color: #f7dd69;
 }
 
 .messageForm {
