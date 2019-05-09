@@ -2,7 +2,6 @@
 
 const path = require('path')
 const AutoLoad = require('fastify-autoload')
-const app = require('fastify')()
 
 module.exports = function (fastify, opts, next) {
 	// Place here your custom code!

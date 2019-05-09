@@ -10,6 +10,7 @@
       "error",
       "tab"
     ],
+    "no-console": "off",
     "no-trailing-spaces": [
       2,
       {

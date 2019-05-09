@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { listen } from '@filippovigani/listenjs';
 import io from 'socket.io-client';
-import style from './test-chat.css';
+import style from './todo-box.css';
 
 class Todos extends React.Component {
 	constructor(props) {
@@ -38,13 +38,12 @@ class Todos extends React.Component {
 			}));
 		};
 
-		const socket = io();
+		const socket = io('/api/todos');
 
-		socket.on('message', payload => {
-			const message = { text: payload, status: 'todo' };
+		socket.on('update', payload => {
 			this.setState(state => ({
 				...state,
-				todos: [...state.todos, message]
+				todos: payload
 			}));
 		});
 
@@ -69,12 +68,14 @@ class Todos extends React.Component {
 
 	handleSubmit(event) {
 		const { text, todos } = this.state;
-		//this.listener.socket.send(text);
 
 		const todo = {text: text, status: 'todo'}
 
 		fetch("/api/todos", {
 			method: 'POST',
+			headers: {
+				"Content-Type": "application/json",
+			},
 			body: JSON.stringify(todo)
 		})
 
@@ -86,6 +87,21 @@ class Todos extends React.Component {
 		event.preventDefault();
 	}
 
+	todoSelected(todo) {
+		/* OPTIMISTIC
+		this.setState(state => ({
+			...state,
+			todos: state.todos.map(todo => (todo.id === id ? {...todo, state: "done"} : todo))
+		}));*/
+		fetch(`/api/todos/${todo.id}`, {
+			method: 'PUT',
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({...todo, status: todo.status === "done" ? "todo" : "done"})
+		})
+	}
+
 	render() {
 		const { status, todos, title, text } = this.state;
 		return (
@@ -95,8 +111,10 @@ class Todos extends React.Component {
 				<ul className={style.todos}>
 					{todos.map(item => (
 						<li
-							key={item}
-							className={item.status === 'done' ? style.done : style.todo}>
+							key={item.id}
+							className={item.status === 'done' ? style.done : style.todo}
+							onClick={() => this.todoSelected(item)}
+							role="presentation">
 							<span>{item.status === 'done' ? 'Done: ' : 'TODO: '}</span>
 							{item.text}
 						</li>

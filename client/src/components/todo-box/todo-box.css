@@ -56,6 +56,10 @@ ul li span {
   letter-spacing: 1px;
 }
 
+.todos>*{
+  cursor: pointer;
+}
+
 .done {
   background-color: #86f77c;
 }

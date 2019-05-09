@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { hot } from 'react-hot-loader/root';
-import Todos from './components/test-chat';
+import Todos from './components/todo-box';
 
 class App extends Component {
 	constructor(props) {
