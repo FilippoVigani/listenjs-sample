@@ -11,7 +11,8 @@ class Todos extends React.Component {
 			title: props.title,
 			status: '',
 			text: '',
-			todos: []
+			todos: [],
+			selectedTodo: null
 		}
 	}
 
@@ -46,6 +47,53 @@ class Todos extends React.Component {
 		this.setState(state => ({...state, text: text}))
 	}
 
+	handleDescriptionChange(event) {
+		const description = event.target.value
+
+		const {selectedTodo} = this.state
+
+		const updatedTodo = {
+			...selectedTodo,
+			description: description
+		}
+
+		this.setState(state => ({
+			...state,
+			selectedTodo: updatedTodo
+		}))
+		fetch(`/api/todos/${updatedTodo.id}`, {
+			method: 'PUT',
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(updatedTodo)
+		})
+	}
+
+	handleTextChange(event) {
+		const text = event.target.value
+
+		const {selectedTodo} = this.state
+
+		const updatedTodo = {
+			...selectedTodo,
+			text: text
+		}
+
+		this.setState(state => ({
+			...state,
+			selectedTodo: updatedTodo
+		}))
+		fetch(`/api/todos/${updatedTodo.id}`, {
+			method: 'PUT',
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(updatedTodo)
+		})
+	}
+
+
 	handleSubmit(event) {
 		const {text/*, todos*/} = this.state
 
@@ -67,7 +115,30 @@ class Todos extends React.Component {
 		event.preventDefault()
 	}
 
-	todoSelected(todo) {
+	todoSelected(e, todo) {
+		/* PESSIMISTIC UPDATE */
+		this.setState(state => ({
+			...state,
+			selectedTodo: todo
+		}))
+
+		if (this.detailSocket){
+			this.detailSocket.close()
+		}
+
+		this.detailSocket = io(`/api/todos/${todo.id}`)
+
+		this.detailSocket.on('update', payload => {
+			this.setState(state => ({
+				...state,
+				selectedTodo: payload
+			}))
+		})
+
+		e.preventDefault()
+	}
+
+	toggleTodo(e, todo) {
 		/* PESSIMISTIC UPDATE */
 		fetch(`/api/todos/${todo.id}`, {
 			method: 'PUT',
@@ -76,25 +147,49 @@ class Todos extends React.Component {
 			},
 			body: JSON.stringify({...todo, status: todo.status === "done" ? "todo" : "done"})
 		})
+
+		e.preventDefault()
 	}
 
 	render() {
-		const {status, todos, title, text} = this.state
+		const {status, todos, title, text, selectedTodo} = this.state
 		return (
 			<div className={style.pageWrapper}>
 				<h1>{title}</h1>
 				<div className={style.status}>{status}</div>
+
+				<div className={style.detail}>
+					{(selectedTodo == null) ?
+						<span>Select a todo to show details</span> : (
+							<>
+								<input
+									type="text"
+									className={style.detailText}
+									value={selectedTodo ? (selectedTodo.text|| ''): ''}
+									onChange={e => this.handleTextChange(e)} />
+								<textarea
+									className={style.detailDescription}
+									value={selectedTodo ? (selectedTodo.description || '') : ''}
+									onChange={e => this.handleDescriptionChange(e)} />
+							</>
+						)}
+
+				</div>
+
 				<ul className={style.todos}>
 					{todos.map(item => (
 						<li
 							key={item.id}
-							className={item.status === 'done' ? style.done : style.todo}
-							role="presentation">
+							className={`${style.todo}
+							${item.status === 'done' ? style.done : ''}
+							${item.id === (selectedTodo ? selectedTodo.id : null) ? style.selected : ''}`}
+							role="presentation"
+							onClick={(e) => this.todoSelected(e, item)}>
 							<span>{item.status === 'done' ? 'Done: ' : 'TODO: '}</span>
 							{item.text}
 							<button
 								type="button"
-								onClick={() => this.todoSelected(item)}>
+								onClick={(e) => this.toggleTodo(e, item)}>
 								{item.status === 'done' ? 'Mark as todo' : 'Mark as done '}
 							</button>
 						</li>
@@ -110,8 +205,8 @@ class Todos extends React.Component {
 						placeholder="Write your todo here..."
 						onChange={e => this.handleMessageChange(e)}
 						required />
-					<button type="submit">Add Todo</button>
-					<button type="button" className="close">Close Connection</button>
+					<button type="submit" className={style.add}>Add Todo</button>
+					<button type="button" className={style.close}>Close Connection</button>
 				</form>
 			</div>
 		)
