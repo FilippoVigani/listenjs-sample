@@ -1,51 +1,30 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { listen } from '@filippovigani/listenjs';
-import io from 'socket.io-client';
-import style from './todo-box.css';
+import React from 'react'
+import PropTypes from 'prop-types'
+import {listen} from '@filippovigani/listenjs'
+import io from 'socket.io-client'
+import style from './todo-box.css'
 
 class Todos extends React.Component {
 	constructor(props) {
-		super(props);
+		super(props)
 		this.state = {
 			title: props.title,
 			status: '',
 			text: '',
 			todos: []
-		};
+		}
 	}
 
 	componentDidMount() {
-		this.listener = listen('wss://echo.websocket.org');
 
-		this.listener.onerror = () => {
-			this.setState(state => ({ ...state, status: 'Error!' }));
-		};
-		this.listener.onconnected = () => {
-			this.setState(state => ({ ...state, status: 'Connected!' }));
-		};
-		this.listener.onupdate = payload => {
-			const message = { text: payload, status: 'todo' };
-			this.setState(state => ({
-				...state,
-				todos: [...state.todos, message]
-			}));
-		};
-		this.listener.ondisconnected = () => {
-			this.setState(state => ({
-				...state,
-				status: 'Disconnected from websocket :('
-			}));
-		};
-
-		const socket = io('/api/todos');
+		const socket = io('/api/todos')
 
 		socket.on('update', payload => {
 			this.setState(state => ({
 				...state,
 				todos: payload
-			}));
-		});
+			}))
+		})
 
 		fetch("/api/todos")
 			.then(response => response.json())
@@ -56,18 +35,19 @@ class Todos extends React.Component {
 				}))
 			})
 
-		this.setState(state => ({ ...state, status: 'Connecting...' }));
+		this.setState(state => ({...state, status: 'Connecting...'}))
 	}
 
-	componentWillUnmount() {}
+	componentWillUnmount() {
+	}
 
 	handleMessageChange(event) {
-		const text = event.target.value;
-		this.setState(state => ({ ...state, text: text }));
+		const text = event.target.value
+		this.setState(state => ({...state, text: text}))
 	}
 
 	handleSubmit(event) {
-		const { text, todos } = this.state;
+		const {text/*, todos*/} = this.state
 
 		const todo = {text: text, status: 'todo'}
 
@@ -81,18 +61,14 @@ class Todos extends React.Component {
 
 		this.setState(state => ({
 			...state,
-			todos: [...todos, todo],
+			//todos: [...todos, todo], Pessimistic
 			text: ''
-		}));
-		event.preventDefault();
+		}))
+		event.preventDefault()
 	}
 
 	todoSelected(todo) {
-		/* OPTIMISTIC
-		this.setState(state => ({
-			...state,
-			todos: state.todos.map(todo => (todo.id === id ? {...todo, state: "done"} : todo))
-		}));*/
+		/* PESSIMISTIC UPDATE */
 		fetch(`/api/todos/${todo.id}`, {
 			method: 'PUT',
 			headers: {
@@ -103,7 +79,7 @@ class Todos extends React.Component {
 	}
 
 	render() {
-		const { status, todos, title, text } = this.state;
+		const {status, todos, title, text} = this.state
 		return (
 			<div className={style.pageWrapper}>
 				<h1>{title}</h1>
@@ -113,10 +89,14 @@ class Todos extends React.Component {
 						<li
 							key={item.id}
 							className={item.status === 'done' ? style.done : style.todo}
-							onClick={() => this.todoSelected(item)}
 							role="presentation">
 							<span>{item.status === 'done' ? 'Done: ' : 'TODO: '}</span>
 							{item.text}
+							<button
+								type="button"
+								onClick={() => this.todoSelected(item)}>
+								{item.status === 'done' ? 'Mark as todo' : 'Mark as done '}
+							</button>
 						</li>
 					))}
 				</ul>
@@ -134,12 +114,12 @@ class Todos extends React.Component {
 					<button type="button" className="close">Close Connection</button>
 				</form>
 			</div>
-		);
+		)
 	}
 }
 
 Todos.propTypes = {
 	title: PropTypes.string
-};
+}
 
-export default Todos;
+export default Todos

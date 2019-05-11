@@ -4,16 +4,19 @@ const todos = [
 	{
 		id: 0,
 		text: "Take out the trash",
+		description: "Remember to take out the trash at 8 pm!",
 		status: "todo"
 	},
 	{
 		id: 1,
 		text: "Purchase train ticket",
+		description: "Buy the train ticket to Bologna.",
 		status: "done"
 	},
 	{
 		id: 2,
 		text: "Call landlord",
+		description: "Call the landlord and ask him about getting a new mattress.",
 		status: "todo"
 	}]
 
@@ -40,6 +43,12 @@ module.exports = function (fastify, opts, next) {
 		reply.notify(todo)
 		reply.notifyParent(todos)
 		reply.send(200)
+	})
+
+	fastify.get('/todos/:id', function (request, reply) {
+		const todo = todos.find(it => it.id === +request.params.id)
+		if (!todo) return reply.send(404)
+		reply.send(todo)
 	})
 
 	next()

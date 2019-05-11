@@ -32,7 +32,19 @@ module.exports = {
 	devServer: {
 		contentBase: commonPaths.outputPath,
 		compress: true,
-		hot: true
+		hot: true,
+		port: 8081,
+		proxy: {
+			'/api': {
+				target: 'http://localhost:3000',
+				secure: false
+				//changeOrigin: true
+			},
+			'/socket.io': {
+				target: 'http://localhost:3000',
+				ws: true
+			}
+		}
 	},
 	plugins: [new webpack.HotModuleReplacementPlugin()]
 };
