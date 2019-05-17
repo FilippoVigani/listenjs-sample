@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {listen} from '@filippovigani/listenjs'
-import io from 'socket.io-client'
+import {listen, prepare} from '@filippovigani/listenjs'
 import style from './todo-box.css'
 
 class Todos extends React.Component {
@@ -14,16 +13,21 @@ class Todos extends React.Component {
 			todos: [],
 			selectedTodo: null
 		}
+
+		this.selectedTodoListener = prepare(payload => {
+			this.setState(state => ({
+				...state,
+				selectedTodo: payload
+			}))
+		})
 	}
 
 	componentDidMount() {
 
-		const socket = io('/api/todos')
-
-		socket.on('update', payload => {
+		this.todosListener = listen('/api/todos', todos => {
 			this.setState(state => ({
 				...state,
-				todos: payload
+				todos: todos
 			}))
 		})
 
@@ -40,6 +44,8 @@ class Todos extends React.Component {
 	}
 
 	componentWillUnmount() {
+		this.todosListener.stop()
+		this.selectedTodoListener.stop()
 	}
 
 	handleMessageChange(event) {
@@ -122,18 +128,7 @@ class Todos extends React.Component {
 			selectedTodo: todo
 		}))
 
-		if (this.detailSocket){
-			this.detailSocket.close()
-		}
-
-		this.detailSocket = io(`/api/todos/${todo.id}`)
-
-		this.detailSocket.on('update', payload => {
-			this.setState(state => ({
-				...state,
-				selectedTodo: payload
-			}))
-		})
+		this.selectedTodoListener.switchTo(`/api/todos/${todo.id}`)
 
 		e.preventDefault()
 	}
@@ -165,7 +160,7 @@ class Todos extends React.Component {
 								<input
 									type="text"
 									className={style.detailText}
-									value={selectedTodo ? (selectedTodo.text|| ''): ''}
+									value={selectedTodo ? (selectedTodo.text || '') : ''}
 									onChange={e => this.handleTextChange(e)} />
 								<textarea
 									className={style.detailDescription}
