@@ -122,7 +122,6 @@ class Todos extends React.Component {
 	}
 
 	todoSelected(e, todo) {
-		/* PESSIMISTIC UPDATE */
 		this.setState(state => ({
 			...state,
 			selectedTodo: todo

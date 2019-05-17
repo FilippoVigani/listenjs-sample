@@ -10,7 +10,10 @@ const Fastify = require('fastify')
 
 // Instantiate Fastify with some config
 const app = Fastify({
-	logger: true,
+	logger: {
+		level: 'debug',
+		prettyPrint: true
+	},
 	pluginTimeout: 10000
 })
 
