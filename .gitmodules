@@ -1,0 +1,6 @@
+[submodule "listenjs"]
+	path = listenjs
+	url = https://github.com/VeegaP/listenjs
+[submodule "listenjs-server"]
+	path = listenjs-server
+	url = https://github.com/VeegaP/listenjs-server.git
