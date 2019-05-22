@@ -1,6 +1,6 @@
 'use strict'
 
-const util = require('util')
+const listen = require('@filippovigani/listenjs-server')
 
 // Read the .env file.
 require('dotenv').config()
@@ -17,17 +17,7 @@ const app = Fastify({
 	pluginTimeout: 10000
 })
 
-const io = require('socket.io')(app.server)
-
-io.on('connection', function (socket) {
-	console.log(`Someone just connected!`)
-
-	socket.emit('message', 'Welcome!')
-
-	socket.on('disconnect', function () {
-		console.log('Someone disconnected!')
-	})
-})
+listen.setup(app.server)
 
 app.register(require('fastify-url-data'))
 
@@ -39,7 +29,7 @@ app.addHook('preHandler', (request, reply, next) => {
 	const path = urlData.path
 	reply.notify = function(payload){
 		console.log(`Notifying ${path} of updated data!`)
-		io.of(path).emit('update', payload)
+		listen.notify(path, payload)
 	}
 	next()
 })
@@ -49,7 +39,7 @@ app.addHook('preHandler', (request, reply, next) => {
 	const path = urlData.path.split('/').slice(0, -1).join('/')
 	reply.notifyParent = function(payload){
 		console.log(`Notifying ${path} of updated data!`)
-		io.of(path).emit('update', payload)
+		listen.notify(path, payload)
 	}
 	next()
 })
