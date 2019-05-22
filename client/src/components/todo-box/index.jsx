@@ -11,13 +11,13 @@ class Todos extends React.Component {
 			status: '',
 			text: '',
 			todos: [],
-			selectedTodo: null
+			selectedTodoId: null
 		}
 
 		this.selectedTodoListener = prepare(payload => {
 			this.setState(state => ({
 				...state,
-				selectedTodo: payload
+				todos: state.todos.map(todo => todo.id === payload.id ? payload : todo)
 			}))
 		})
 	}
@@ -56,7 +56,9 @@ class Todos extends React.Component {
 	handleDescriptionChange(event) {
 		const description = event.target.value
 
-		const {selectedTodo} = this.state
+		const {todos, selectedTodoId} = this.state
+
+		const selectedTodo = todos.find(todo => todo.id === selectedTodoId)
 
 		const updatedTodo = {
 			...selectedTodo,
@@ -65,7 +67,7 @@ class Todos extends React.Component {
 
 		this.setState(state => ({
 			...state,
-			selectedTodo: updatedTodo
+			todos: state.todos.map(todo => todo.id === selectedTodoId ? selectedTodo : todo)
 		}))
 		fetch(`/api/todos/${updatedTodo.id}`, {
 			method: 'PUT',
@@ -79,7 +81,9 @@ class Todos extends React.Component {
 	handleTextChange(event) {
 		const text = event.target.value
 
-		const {selectedTodo} = this.state
+		const {todos, selectedTodoId} = this.state
+
+		const selectedTodo = todos.find(todo => todo.id === selectedTodoId)
 
 		const updatedTodo = {
 			...selectedTodo,
@@ -88,7 +92,7 @@ class Todos extends React.Component {
 
 		this.setState(state => ({
 			...state,
-			selectedTodo: updatedTodo
+			todos: state.todos.map(todo => todo.id === selectedTodoId ? selectedTodo : todo)
 		}))
 		fetch(`/api/todos/${updatedTodo.id}`, {
 			method: 'PUT',
@@ -121,13 +125,13 @@ class Todos extends React.Component {
 		event.preventDefault()
 	}
 
-	todoSelected(e, todo) {
+	todoSelected(e, todoId) {
 		this.setState(state => ({
 			...state,
-			selectedTodo: todo
+			selectedTodoId: todoId
 		}))
 
-		this.selectedTodoListener.switchTo(`/api/todos/${todo.id}`)
+		this.selectedTodoListener.switchTo(`/api/todos/${todoId}`)
 
 		e.preventDefault()
 	}
@@ -146,7 +150,8 @@ class Todos extends React.Component {
 	}
 
 	render() {
-		const {status, todos, title, text, selectedTodo} = this.state
+		const {status, todos, title, text, selectedTodoId} = this.state
+		let selectedTodo = todos.find(todo => todo.id === selectedTodoId)
 		return (
 			<div className={style.pageWrapper}>
 				<h1>{title}</h1>
@@ -159,11 +164,11 @@ class Todos extends React.Component {
 								<input
 									type="text"
 									className={style.detailText}
-									value={selectedTodo ? (selectedTodo.text || '') : ''}
+									value={selectedTodo.text || ''}
 									onChange={e => this.handleTextChange(e)} />
 								<textarea
 									className={style.detailDescription}
-									value={selectedTodo ? (selectedTodo.description || '') : ''}
+									value={selectedTodo.description || ''}
 									onChange={e => this.handleDescriptionChange(e)} />
 							</>
 						)}
@@ -176,9 +181,9 @@ class Todos extends React.Component {
 							key={item.id}
 							className={`${style.todo}
 							${item.status === 'done' ? style.done : ''}
-							${item.id === (selectedTodo ? selectedTodo.id : null) ? style.selected : ''}`}
+							${item.id === selectedTodoId ? style.selected : ''}`}
 							role="presentation"
-							onClick={(e) => this.todoSelected(e, item)}>
+							onClick={(e) => this.todoSelected(e, item.id)}>
 							<span>{item.status === 'done' ? 'Done: ' : 'TODO: '}</span>
 							{item.text}
 							<button
