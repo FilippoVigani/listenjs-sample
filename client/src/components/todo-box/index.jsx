@@ -24,12 +24,20 @@ class Todos extends React.Component {
 
 	componentDidMount() {
 
-		this.todosListener = listen('/api/todos', todos => {
-			this.setState(state => ({
-				...state,
-				todos: todos
-			}))
-		})
+		this.todosListener = listen(
+			'/api/todos',
+			todos => {
+				this.setState(state => ({
+					...state,
+					todos: todos
+				}))
+			},
+			status => {
+				this.setState(state => ({
+					...state,
+					status: status.status
+				}))
+			})
 
 		fetch("/api/todos")
 			.then(response => response.json())
@@ -39,8 +47,6 @@ class Todos extends React.Component {
 					todos: data
 				}))
 			})
-
-		this.setState(state => ({...state, status: 'Connecting...'}))
 	}
 
 	componentWillUnmount() {
@@ -205,7 +211,6 @@ class Todos extends React.Component {
 						onChange={e => this.handleMessageChange(e)}
 						required />
 					<button type="submit" className={style.add}>Add Todo</button>
-					<button type="button" className={style.close}>Close Connection</button>
 				</form>
 			</div>
 		)
