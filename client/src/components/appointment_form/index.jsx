@@ -150,8 +150,7 @@ class AppointmentFormContainerBasic extends React.PureComponent {
 		return (
 			<AppointmentForm.Popup
 				visible={visible}
-				onBackdropClick={visibleChange}
-			>
+				onBackdropClick={visibleChange}>
 				<AppointmentForm.Container className={classes.container}>
 					<div className={classes.header}>
 						<IconButton className={classes.closeButton} onClick={visibleChange}>
@@ -162,35 +161,30 @@ class AppointmentFormContainerBasic extends React.PureComponent {
 						<div className={classes.wrapper}>
 							<Create className={classes.icon} color="action" />
 							<TextField
-								{...textEditorProps('title')}
-							/>
+								{...textEditorProps('title')} />
 						</div>
 						<div className={classes.wrapper}>
 							<CalendarToday className={classes.icon} color="action" />
 							<MuiPickersUtilsProvider utils={MomentUtils}>
 								<InlineDateTimePicker
 									label="Start Date"
-									{...pickerEditorProps('startDate')}
-								/>
+									{...pickerEditorProps('startDate')} />
 								<InlineDateTimePicker
 									label="End Date"
-									{...pickerEditorProps('endDate')}
-								/>
+									{...pickerEditorProps('endDate')} />
 							</MuiPickersUtilsProvider>
 						</div>
 						<div className={classes.wrapper}>
 							<LocationOn className={classes.icon} color="action" />
 							<TextField
-								{...textEditorProps('location')}
-							/>
+								{...textEditorProps('location')} />
 						</div>
 						<div className={classes.wrapper}>
 							<Notes className={classes.icon} color="action" />
 							<TextField
 								{...textEditorProps('notes')}
 								multiline
-								rows="6"
-							/>
+								rows="6" />
 						</div>
 					</div>
 					<div className={classes.buttonGroup}>
@@ -202,8 +196,7 @@ class AppointmentFormContainerBasic extends React.PureComponent {
 								onClick={() => {
 									visibleChange()
 									this.commitAppointment('deleted')
-								}}
-							>
+								}}>
 								{'Delete'}
 							</Button>
 						)}
@@ -214,8 +207,7 @@ class AppointmentFormContainerBasic extends React.PureComponent {
 							onClick={() => {
 								visibleChange()
 								applyChanges()
-							}}
-						>
+							}}>
 							{isNewAppointment ? 'Create' : 'Save'}
 						</Button>
 					</div>
@@ -230,7 +222,7 @@ AppointmentFormContainerBasic.propTypes = {
 	visible: PropTypes.bool,
 	visibleChange: PropTypes.func,
 	commitChanges: PropTypes.func,
-	appointmentData: PropTypes.objectOf(PropTypes.object)
+	appointmentData: PropTypes.objectOf(PropTypes.any)
 }
 
 

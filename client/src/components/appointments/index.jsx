@@ -36,8 +36,6 @@ import AddIcon from '@material-ui/icons/Add'
 import moment from 'moment';
 import AppointmentFormContainer from '../appointment_form'
 
-import {appointments} from '../../demo-data/appointments'
-
 const toolbarStyles = {
 	toolbarRoot: {
 		position: 'relative',
@@ -257,51 +255,43 @@ class Demo extends React.PureComponent {
 		return (
 			<Paper>
 				<Scheduler
-					data={data}
-				>
+					data={data}>
 					<ViewState
 						currentDate={currentDate}
 						currentViewName={currentViewName}
 						onCurrentViewNameChange={this.currentViewNameChange}
-						onCurrentDateChange={this.currentDateChange}
-					/>
+						onCurrentDateChange={this.currentDateChange} />
 					<EditingState
 						onCommitChanges={this.commitChanges}
 						onEditingAppointmentIdChange={this.onEditingAppointmentIdChange}
-						onAddedAppointmentChange={this.onAddedAppointmentChange}
-					/>
+						onAddedAppointmentChange={this.onAddedAppointmentChange} />
 					<DayView startDayHour={8} />
 					<WeekView
 						startDayHour={startDayHour}
 						endDayHour={endDayHour}
 						firstDayOfWeek={1}
-						cellDuration={60}
-					/>
+						cellDuration={60} />
 					<MonthView />
 					<Appointments />
 					<Toolbar
-						{...loading ? { rootComponent: ToolbarWithLoading } : null}
-					/>
+						{...loading ? { rootComponent: ToolbarWithLoading } : null} />
 					<AppointmentTooltip
 						contentComponent={TooltipContent}
 						showOpenButton
 						showCloseButton
-						showDeleteButton
-					/>
+						showDeleteButton />
 					<DateNavigator />
 					<ViewSwitcher />
 					<AppointmentForm
 						popupComponent={this.appointmentForm}
 						visible={editingFormVisible}
-						onVisibilityChange={this.toggleEditingFormVisibility}
-					/>
+						onVisibilityChange={this.toggleEditingFormVisibility} />
 					<DragDropProvider />
 				</Scheduler>
 
 				<Dialog
 					open={confirmationVisible}
-					onClose={this.cancelDelete}
-				>
+					onClose={this.cancelDelete}>
 					<DialogTitle>Delete Appointment</DialogTitle>
 					<DialogContent>
 						<DialogContentText>Are you sure you want to delete this appointment?</DialogContentText>
@@ -322,8 +312,7 @@ class Demo extends React.PureComponent {
 							startDate: new Date(currentDate).setHours(startDayHour),
 							endDate: new Date(currentDate).setHours(startDayHour + 1),
 						})
-					}}
-				>
+					}}>
 					<AddIcon />
 				</Fab>
 			</Paper>

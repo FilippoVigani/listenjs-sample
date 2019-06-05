@@ -96,8 +96,8 @@
     "react/jsx-handler-names": [
       "warn",
       {
-        "eventHandlerPrefix": "handle",
-        "eventHandlerPropPrefix": "on"
+        "eventHandlerPrefix": "",
+        "eventHandlerPropPrefix": "off"
       }
     ],
     "react/jsx-indent": [
