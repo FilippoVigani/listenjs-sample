@@ -14,7 +14,7 @@ import {
 	DragDropProvider,
 } from '@devexpress/dx-react-scheduler-material-ui'
 import {connectProps} from '@devexpress/dx-react-core'
-import {DateTimePicker, MuiPickersUtilsProvider} from '@material-ui/pickers'
+import {InlineDateTimePicker, MuiPickersUtilsProvider} from 'material-ui-pickers'
 import MomentUtils from '@date-io/moment'
 import {withStyles} from '@material-ui/core/styles'
 import Dialog from '@material-ui/core/Dialog'
@@ -187,11 +187,11 @@ class AppointmentFormContainerBasic extends React.PureComponent {
 						<div className={classes.wrapper}>
 							<CalendarToday className={classes.icon} color="action" />
 							<MuiPickersUtilsProvider utils={MomentUtils}>
-								<DateTimePicker
+								<InlineDateTimePicker
 									label="Start Date"
 									{...pickerEditorProps('startDate')}
 								/>
-								<DateTimePicker
+								<InlineDateTimePicker
 									label="End Date"
 									{...pickerEditorProps('endDate')}
 								/>
@@ -401,21 +401,13 @@ class Demo extends React.PureComponent {
 					open={confirmationVisible}
 					onClose={this.cancelDelete}
 				>
-					<DialogTitle>
-						Delete Appointment
-					</DialogTitle>
+					<DialogTitle>Delete Appointment</DialogTitle>
 					<DialogContent>
-						<DialogContentText>
-							Are you sure you want to delete this appointment?
-						</DialogContentText>
+						<DialogContentText>Are you sure you want to delete this appointment?</DialogContentText>
 					</DialogContent>
 					<DialogActions>
-						<Button onClick={this.toggleConfirmationVisible} color="primary" variant="outlined">
-							Cancel
-						</Button>
-						<Button onClick={this.commitDeletedAppointment} color="secondary" variant="outlined">
-							Delete
-						</Button>
+						<Button onClick={this.toggleConfirmationVisible} color="primary" variant="outlined">Cancel</Button>
+						<Button onClick={this.commitDeletedAppointment} color="secondary" variant="outlined">Delete</Button>
 					</DialogActions>
 				</Dialog>
 
