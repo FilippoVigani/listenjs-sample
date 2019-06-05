@@ -218,7 +218,7 @@ class AppointmentFormContainerBasic extends React.PureComponent {
 }
 
 AppointmentFormContainerBasic.propTypes = {
-	classes: PropTypes.objectOf(containerStyles),
+	classes: PropTypes.objectOf(PropTypes.any),
 	visible: PropTypes.bool,
 	visibleChange: PropTypes.func,
 	commitChanges: PropTypes.func,

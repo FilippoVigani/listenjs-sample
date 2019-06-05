@@ -321,7 +321,7 @@ class Demo extends React.PureComponent {
 }
 
 Demo.propTypes = {
-	classes: PropTypes.objectOf(styles),
+	classes: PropTypes.objectOf(PropTypes.any),
 }
 
 
