@@ -36,7 +36,6 @@ import AddIcon from '@material-ui/icons/Add'
 import moment from 'moment';
 import AppointmentFormContainer from '../appointment_form'
 
-
 import {appointments} from '../../demo-data/appointments'
 
 const toolbarStyles = {
@@ -80,6 +79,7 @@ const styles = theme => ({
 		marginRight: theme.spacing.unit,
 	},
 	tooltipContent: {
+		width: 300 - 2 * theme.spacing.unit * 2.2,
 		paddingLeft: theme.spacing.unit * 2.2,
 		paddingRight: theme.spacing.unit * 2.2,
 	},
@@ -119,7 +119,7 @@ class Demo extends React.PureComponent {
 	constructor(props) {
 		super(props)
 		this.state = {
-			data: appointments,
+			data: [],
 			currentDate: '2019-06-26',
 			confirmationVisible: false,
 			editingFormVisible: false,
@@ -170,35 +170,21 @@ class Demo extends React.PureComponent {
 
 	componentDidUpdate() {
 		this.appointmentForm.update()
-		this.loadData();
 	}
 
 
 	loadData() {
-		/*const { currentDate, currentViewName } = this.state;
-		const queryString = makeQueryString(currentDate, currentViewName);
-		if (queryString === this.lastQuery) {
-			this.setState({ loading: false });
-			return;
-		}
-		fetch(queryString)
+		fetch(`/api/appointments`)
 			.then(response => response.json())
-			.then(({ data }) => {
-				setTimeout(() => {
+			.then((data) => {
+				setTimeout(() => { //Fake long response
 					this.setState({
 						data,
 						loading: false,
-					});
-				}, 600);
+					})
+				}, 2000)
 			})
-			.catch(() => this.setState({ loading: false }));
-		this.lastQuery = queryString;*/
-		setTimeout(() => {
-			this.setState({
-				appointments,
-				loading: false,
-			})
-		}, 2000)
+			.catch(() => this.setState({ loading: false }))
 	}
 
 	onEditingAppointmentIdChange(editingAppointmentId) {
