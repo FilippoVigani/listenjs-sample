@@ -34,7 +34,9 @@ import Fab from '@material-ui/core/Fab'
 import Notes from '@material-ui/icons/Notes'
 import AddIcon from '@material-ui/icons/Add'
 import moment from 'moment';
+import {listen} from "@filippovigani/listenjs/listen"
 import AppointmentFormContainer from '../appointment_form'
+import StatusIndicator from "../status_indicator/status_indicator"
 
 const toolbarStyles = {
 	toolbarRoot: {
@@ -170,19 +172,64 @@ class Demo extends React.PureComponent {
 		this.appointmentForm.update()
 	}
 
+	componentWillUnmount() {
+		if (this.appointmentsListener)
+			this.appointmentsListener.stop()
+	}
+
 
 	loadData() {
+		this.appointmentsListener = listen(
+			'/api/appointments',
+			data => {
+				this.setState({
+					data,
+					loading: false,
+				})
+			},
+			status => {
+				this.setState({
+					status: status,
+				})
+			})
 		fetch(`/api/appointments`)
 			.then(response => response.json())
 			.then((data) => {
-				setTimeout(() => { //Fake long response
-					this.setState({
-						data,
-						loading: false,
-					})
-				}, 2000)
+				this.setState({
+					data,
+					loading: false,
+				})
 			})
 			.catch(() => this.setState({ loading: false }))
+	}
+
+	updateData(appointment){
+		fetch("/api/appointments", {
+			method: 'POST',
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(appointment)
+		})
+	}
+
+	postData(appointment){
+		fetch(`/api/appointments/${appointment.id}`, {
+			method: 'PUT',
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(appointment)
+		})
+	}
+
+	deleteData(appointment){
+		fetch(`/api/appointments/${appointment.id}`, {
+			method: 'DELETE',
+			headers: {
+				"Content-Type": "application/json",
+			}
+		})
 	}
 
 	onEditingAppointmentIdChange(editingAppointmentId) {
@@ -224,14 +271,17 @@ class Demo extends React.PureComponent {
 		this.setState((state) => {
 			let {data} = state
 			if (added) {
-				const startingAddedId = data.length > 0 ? data[data.length - 1].id + 1 : 0
-				data = [...data, {id: startingAddedId, ...added}]
+				this.postData(added)
+				/*const startingAddedId = data.length > 0 ? data[data.length - 1].id + 1 : 0
+				data = [...data, {id: startingAddedId, ...added}]*/
 			}
 			if (changed) {
+				this.updateData(changed[Object.keys(changed)[0]])
 				data = data.map(appointment => (
 					changed[appointment.id] ? {...appointment, ...changed[appointment.id]} : appointment))
 			}
 			if (deleted !== undefined) {
+				this.deleteData(deleted)
 				this.setDeletedAppointmentId(deleted)
 				this.toggleConfirmationVisible()
 			}
@@ -248,7 +298,8 @@ class Demo extends React.PureComponent {
 			startDayHour,
 			endDayHour,
 			currentViewName,
-			loading
+			loading,
+			status
 		} = this.state
 		const {classes} = this.props
 
@@ -274,7 +325,8 @@ class Demo extends React.PureComponent {
 					<MonthView />
 					<Appointments />
 					<Toolbar
-						{...loading ? { rootComponent: ToolbarWithLoading } : null} />
+						{...loading ? { rootComponent: ToolbarWithLoading } : null}>
+					</Toolbar>
 					<AppointmentTooltip
 						contentComponent={TooltipContent}
 						showOpenButton
@@ -288,6 +340,8 @@ class Demo extends React.PureComponent {
 						onVisibilityChange={this.toggleEditingFormVisibility} />
 					<DragDropProvider />
 				</Scheduler>
+
+				<StatusIndicator status={status ? status.status : ""} />
 
 				<Dialog
 					open={confirmationVisible}
