@@ -1,6 +1,5 @@
 import React, {Component} from 'react'
 import {hot} from 'react-hot-loader/root'
-import * as PropTypes from 'prop-types'
 import {MuiThemeProvider, createMuiTheme} from '@material-ui/core/styles'
 import {blue} from '@material-ui/core/colors'
 import Demo from './components/appointments'

@@ -1,5 +1,6 @@
 /* eslint-disable react/no-unused-state */
 import * as React from 'react'
+import PropTypes from 'prop-types'
 import Paper from '@material-ui/core/Paper'
 import {ViewState, EditingState} from '@devexpress/dx-react-scheduler'
 import {
@@ -341,5 +342,10 @@ class Demo extends React.PureComponent {
 		)
 	}
 }
+
+Demo.propTypes = {
+	classes: PropTypes.objectOf(styles),
+}
+
 
 export default withStyles(styles)(Demo)

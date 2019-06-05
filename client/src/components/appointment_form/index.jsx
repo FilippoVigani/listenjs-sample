@@ -202,8 +202,9 @@ class AppointmentFormContainerBasic extends React.PureComponent {
 								onClick={() => {
 									visibleChange()
 									this.commitAppointment('deleted')
-								}}>
-								Delete
+								}}
+							>
+								{'Delete'}
 							</Button>
 						)}
 						<Button
@@ -225,7 +226,7 @@ class AppointmentFormContainerBasic extends React.PureComponent {
 }
 
 AppointmentFormContainerBasic.propTypes = {
-	classes: PropTypes.any,
+	classes: PropTypes.objectOf(containerStyles),
 	visible: PropTypes.bool,
 	visibleChange: PropTypes.func,
 	commitChanges: PropTypes.func,
