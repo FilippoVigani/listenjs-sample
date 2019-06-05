@@ -15,9 +15,14 @@ import {
 	DragDropProvider,
 	DateNavigator
 } from '@devexpress/dx-react-scheduler-material-ui'
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
 import {connectProps} from '@devexpress/dx-react-core'
 import {withStyles} from '@material-ui/core/styles'
 import Dialog from '@material-ui/core/Dialog'
+import AccessTime from '@material-ui/icons/AccessTime';
 import LinearProgress from '@material-ui/core/LinearProgress'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
@@ -25,7 +30,9 @@ import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import Button from '@material-ui/core/Button'
 import Fab from '@material-ui/core/Fab'
+import Notes from '@material-ui/icons/Notes'
 import AddIcon from '@material-ui/icons/Add'
+import moment from 'moment';
 import AppointmentFormContainer from '../appointment_form'
 
 
@@ -62,7 +69,49 @@ const styles = theme => ({
 		bottom: theme.spacing.unit * 3,
 		right: theme.spacing.unit * 4,
 	},
+	contentItem: {
+		paddingLeft: 0,
+	},
+	contentItemValue: {
+		padding: 0,
+	},
+	contentItemIcon: {
+		marginRight: theme.spacing.unit,
+	},
+	tooltipContent: {
+		paddingLeft: theme.spacing.unit * 2.2,
+		paddingRight: theme.spacing.unit * 2.2,
+	},
 })
+
+const TooltipContent = withStyles(styles, { name: 'TooltipContent' })(
+	({ classes, appointmentData, ...restProps }) => {
+		return (
+			<AppointmentTooltip.Content {...restProps} className={classes.tooltipContent}>
+				<List>
+					<ListItem className={classes.contentItem}>
+						<ListItemIcon className={`${classes.contentItemIcon}`}>
+							<AccessTime />
+						</ListItemIcon>
+						<ListItemText className={classes.contentItemValue}>
+							{moment(appointmentData.startDate).format('h:mm A')}
+							{' - '}
+							{moment(appointmentData.endDate).format('h:mm A')}
+						</ListItemText>
+					</ListItem>
+					<ListItem className={classes.contentItem}>
+						<ListItemIcon className={`${classes.contentItemIcon}`}>
+							<Notes />
+						</ListItemIcon>
+						<ListItemText className={classes.contentItemValue}>
+							<span>{appointmentData.notes}</span>
+						</ListItemText>
+					</ListItem>
+				</List>
+			</AppointmentTooltip.Content>
+		);
+	},
+);
 
 /* eslint-disable-next-line react/no-multi-comp */
 class Demo extends React.PureComponent {
@@ -245,6 +294,7 @@ class Demo extends React.PureComponent {
 						{...loading ? { rootComponent: ToolbarWithLoading } : null}
 					/>
 					<AppointmentTooltip
+						contentComponent={TooltipContent}
 						showOpenButton
 						showCloseButton
 						showDeleteButton
