@@ -120,7 +120,7 @@ class Demo extends React.PureComponent {
 		super(props)
 		this.state = {
 			data: [],
-			currentDate: '2019-06-26',
+			currentDate: '2019-06-11',
 			confirmationVisible: false,
 			editingFormVisible: false,
 			deletedAppointmentId: undefined,
@@ -129,7 +129,7 @@ class Demo extends React.PureComponent {
 			startDayHour: 7,
 			endDayHour: 24,
 			loading: true,
-			currentViewName: 'Week',
+			currentViewName: 'Month',
 		}
 
 		this.toggleConfirmationVisible = this.toggleConfirmationVisible.bind(this)
@@ -137,10 +137,10 @@ class Demo extends React.PureComponent {
 		this.toggleEditingFormVisibility = this.toggleEditingFormVisibility.bind(this)
 
 		this.currentViewNameChange = (currentViewName) => {
-			this.setState({ currentViewName, loading: true });
+			this.setState({ currentViewName});
 		};
 		this.currentDateChange = (currentDate) => {
-			this.setState({ currentDate, loading: true });
+			this.setState({ currentDate});
 		};
 
 		this.commitChanges = this.commitChanges.bind(this)
@@ -165,7 +165,7 @@ class Demo extends React.PureComponent {
 	}
 
 	componentDidMount() {
-		this.loadData();
+		this.loadData()
 	}
 
 	componentDidUpdate() {
@@ -274,6 +274,8 @@ class Demo extends React.PureComponent {
 					<WeekView
 						startDayHour={startDayHour}
 						endDayHour={endDayHour}
+						firstDayOfWeek={1}
+						cellDuration={60}
 					/>
 					<MonthView />
 					<Appointments />
