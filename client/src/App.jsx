@@ -15,17 +15,6 @@ const lightTheme = createMuiTheme({
 	},
 })
 
-const ThemeContainer = ({theme, children}) => (
-	<MuiThemeProvider theme={theme}>
-		{children}
-	</MuiThemeProvider>
-)
-
-ThemeContainer.propTypes = {
-	theme: PropTypes.any.isRequired,
-	children: PropTypes.node.isRequired,
-}
-
 
 class App extends Component {
 	constructor(props) {
@@ -34,7 +23,7 @@ class App extends Component {
 	}
 
 	render() {
-		return <ThemeContainer theme={lightTheme}><Demo /></ThemeContainer>
+		return <MuiThemeProvider theme={lightTheme}><Demo /></MuiThemeProvider>
 	}
 }
 

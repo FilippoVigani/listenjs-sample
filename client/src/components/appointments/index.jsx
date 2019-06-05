@@ -5,6 +5,7 @@ import {ViewState, EditingState} from '@devexpress/dx-react-scheduler'
 import {
 	Scheduler,
 	Toolbar,
+	DayView,
 	MonthView,
 	WeekView,
 	ViewSwitcher,
@@ -12,12 +13,14 @@ import {
 	AppointmentTooltip,
 	AppointmentForm,
 	DragDropProvider,
+	DateNavigator
 } from '@devexpress/dx-react-scheduler-material-ui'
 import {connectProps} from '@devexpress/dx-react-core'
 import {InlineDateTimePicker, MuiPickersUtilsProvider} from 'material-ui-pickers'
 import MomentUtils from '@date-io/moment'
 import {withStyles} from '@material-ui/core/styles'
 import Dialog from '@material-ui/core/Dialog'
+import LinearProgress from '@material-ui/core/LinearProgress'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogContentText from '@material-ui/core/DialogContentText'
@@ -38,6 +41,7 @@ import {appointments} from '../../demo-data/appointments'
 const containerStyles = theme => ({
 	container: {
 		width: `${theme.spacing.unit * 68}px`,
+		height: "auto",
 		padding: 0,
 		paddingBottom: theme.spacing.unit * 2,
 	},
@@ -79,6 +83,29 @@ const containerStyles = theme => ({
 		width: '100%',
 	},
 })
+
+const toolbarStyles = {
+	toolbarRoot: {
+		position: 'relative',
+	},
+	progress: {
+		position: 'absolute',
+		width: '100%',
+		bottom: 0,
+		left: 0,
+	},
+};
+
+const ToolbarWithLoading = withStyles(toolbarStyles, { name: 'Toolbar' })(
+	({ children, classes, ...restProps }) => (
+		<div className={classes.toolbarRoot}>
+			<Toolbar.Root {...restProps}>
+				{children}
+			</Toolbar.Root>
+			<LinearProgress className={classes.progress} />
+		</div>
+	),
+);
 
 class AppointmentFormContainerBasic extends React.PureComponent {
 	constructor(props) {
@@ -243,7 +270,7 @@ class AppointmentFormContainerBasic extends React.PureComponent {
 	}
 }
 
-const AppointmentFormContainer = withStyles(containerStyles)(AppointmentFormContainerBasic)
+const AppointmentFormContainer = withStyles(containerStyles, { name: 'AppointmentFormContainer' })(AppointmentFormContainerBasic)
 
 const styles = theme => ({
 	addButton: {
@@ -259,19 +286,28 @@ class Demo extends React.PureComponent {
 		super(props)
 		this.state = {
 			data: appointments,
-			currentDate: '2018-06-27',
+			currentDate: '2019-06-26',
 			confirmationVisible: false,
 			editingFormVisible: false,
 			deletedAppointmentId: undefined,
 			editingAppointmentId: undefined,
 			addedAppointment: {},
-			startDayHour: 9,
-			endDayHour: 19,
+			startDayHour: 7,
+			endDayHour: 24,
+			loading: true,
+			currentViewName: 'Week',
 		}
 
 		this.toggleConfirmationVisible = this.toggleConfirmationVisible.bind(this)
 		this.commitDeletedAppointment = this.commitDeletedAppointment.bind(this)
 		this.toggleEditingFormVisibility = this.toggleEditingFormVisibility.bind(this)
+
+		this.currentViewNameChange = (currentViewName) => {
+			this.setState({ currentViewName, loading: true });
+		};
+		this.currentDateChange = (currentDate) => {
+			this.setState({ currentDate, loading: true });
+		};
 
 		this.commitChanges = this.commitChanges.bind(this)
 		this.onEditingAppointmentIdChange = this.onEditingAppointmentIdChange.bind(this)
@@ -294,8 +330,41 @@ class Demo extends React.PureComponent {
 		})
 	}
 
+	componentDidMount() {
+		this.loadData();
+	}
+
 	componentDidUpdate() {
 		this.appointmentForm.update()
+		this.loadData();
+	}
+
+
+	loadData() {
+		/*const { currentDate, currentViewName } = this.state;
+		const queryString = makeQueryString(currentDate, currentViewName);
+		if (queryString === this.lastQuery) {
+			this.setState({ loading: false });
+			return;
+		}
+		fetch(queryString)
+			.then(response => response.json())
+			.then(({ data }) => {
+				setTimeout(() => {
+					this.setState({
+						data,
+						loading: false,
+					});
+				}, 600);
+			})
+			.catch(() => this.setState({ loading: false }));
+		this.lastQuery = queryString;*/
+		setTimeout(() => {
+			this.setState({
+				appointments,
+				loading: false,
+			})
+		}, 2000)
 	}
 
 	onEditingAppointmentIdChange(editingAppointmentId) {
@@ -360,6 +429,8 @@ class Demo extends React.PureComponent {
 			editingFormVisible,
 			startDayHour,
 			endDayHour,
+			currentViewName,
+			loading
 		} = this.state
 		const {classes} = this.props
 
@@ -370,24 +441,31 @@ class Demo extends React.PureComponent {
 				>
 					<ViewState
 						currentDate={currentDate}
+						currentViewName={currentViewName}
+						onCurrentViewNameChange={this.currentViewNameChange}
+						onCurrentDateChange={this.currentDateChange}
 					/>
 					<EditingState
 						onCommitChanges={this.commitChanges}
 						onEditingAppointmentIdChange={this.onEditingAppointmentIdChange}
 						onAddedAppointmentChange={this.onAddedAppointmentChange}
 					/>
+					<DayView startDayHour={8} />
 					<WeekView
 						startDayHour={startDayHour}
 						endDayHour={endDayHour}
 					/>
 					<MonthView />
 					<Appointments />
+					<Toolbar
+						{...loading ? { rootComponent: ToolbarWithLoading } : null}
+					/>
 					<AppointmentTooltip
 						showOpenButton
 						showCloseButton
 						showDeleteButton
 					/>
-					<Toolbar />
+					<DateNavigator />
 					<ViewSwitcher />
 					<AppointmentForm
 						popupComponent={this.appointmentForm}
