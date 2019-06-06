@@ -31,6 +31,15 @@ app.addHook('preHandler', (request, reply, next) => {
 		console.log(`Notifying ${path} of updated data!`)
 		listen.notify(path, payload)
 	}
+	reply.notifyDelete = function(){
+		console.log(`Notifying ${path} of deleted data!`)
+		listen.notifyDeletion(path)
+	}
+	const parentPath = urlData.path.split('/').slice(0, -1).join('/')
+	reply.notifyParent = function(payload){
+		console.log(`Notifying ${parentPath} of updated data!`)
+		listen.notify(parentPath, payload)
+	}
 	next()
 })
 

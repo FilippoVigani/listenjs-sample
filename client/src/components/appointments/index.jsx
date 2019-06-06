@@ -204,16 +204,6 @@ class Demo extends React.PureComponent {
 	}
 
 	updateData(appointment){
-		fetch("/api/appointments", {
-			method: 'POST',
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify(appointment)
-		})
-	}
-
-	postData(appointment){
 		fetch(`/api/appointments/${appointment.id}`, {
 			method: 'PUT',
 			headers: {
@@ -223,12 +213,19 @@ class Demo extends React.PureComponent {
 		})
 	}
 
-	deleteData(appointment){
-		fetch(`/api/appointments/${appointment.id}`, {
-			method: 'DELETE',
+	postData(appointment){
+		fetch("/api/appointments", {
+			method: 'POST',
 			headers: {
 				"Content-Type": "application/json",
-			}
+			},
+			body: JSON.stringify(appointment)
+		})
+	}
+
+	deleteData(appointmentId){
+		fetch(`/api/appointments/${appointmentId}`, {
+			method: 'DELETE'
 		})
 	}
 
@@ -258,6 +255,8 @@ class Demo extends React.PureComponent {
 	}
 
 	commitDeletedAppointment() {
+		const {deletedAppointmentId} = this.state
+		this.deleteData(deletedAppointmentId)
 		this.setState((state) => {
 			const {data, deletedAppointmentId} = state
 			const nextData = data.filter(appointment => appointment.id !== deletedAppointmentId)
@@ -271,6 +270,7 @@ class Demo extends React.PureComponent {
 		this.setState((state) => {
 			let {data} = state
 			if (added) {
+				//Fire and forget, use pessimistic update in this case since we don't know the ID we will get
 				this.postData(added)
 				/*const startingAddedId = data.length > 0 ? data[data.length - 1].id + 1 : 0
 				data = [...data, {id: startingAddedId, ...added}]*/
@@ -281,7 +281,6 @@ class Demo extends React.PureComponent {
 					changed[appointment.id] ? {...appointment, ...changed[appointment.id]} : appointment))
 			}
 			if (deleted !== undefined) {
-				this.deleteData(deleted)
 				this.setDeletedAppointmentId(deleted)
 				this.toggleConfirmationVisible()
 			}

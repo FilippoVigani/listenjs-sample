@@ -38,6 +38,15 @@ module.exports = function (fastify, opts, next) {
 		reply.send(200)
 	})
 
+	fastify.delete('/appointments/:id', function (request, reply) {
+		const index = appointments.findIndex(it => it.id === +request.params.id)
+		if (index === -1) return reply.send(404)
+		appointments.splice(index)
+		reply.notifyDelete()
+		reply.notifyParent(appointments)
+		reply.send(200)
+	})
+
 	fastify.get('/appointments/:id', function (request, reply) {
 		const appointment = appointments.find(it => it.id === +request.params.id)
 		if (!appointment) return reply.send(404)
