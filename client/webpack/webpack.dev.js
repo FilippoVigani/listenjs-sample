@@ -36,12 +36,12 @@ module.exports = {
 		port: 8081,
 		proxy: {
 			'/api': {
-				target: 'http://localhost:3000',
+				target: 'http://localhost:8000',
 				secure: false
 				//changeOrigin: true
 			},
 			'/socket.io': {
-				target: 'http://localhost:3000',
+				target: 'http://localhost:8000',
 				ws: true
 			}
 		}
