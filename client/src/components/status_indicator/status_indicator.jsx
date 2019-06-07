@@ -1,6 +1,6 @@
 import * as React from 'react'
 import PropTypes from 'prop-types'
-import {ImportExportRounded, ErrorRounded, CheckCircleRounded} from '@material-ui/icons'
+import {ImportExportRounded, ErrorRounded, CheckCircleRounded, CloudOffRounded} from '@material-ui/icons'
 
 class StatusIndicator extends React.PureComponent{
 	constructor(props) {
@@ -12,6 +12,8 @@ class StatusIndicator extends React.PureComponent{
 
 		if(status === "connected"){
 			return <CheckCircleRounded />
+		} else if(status === "disconnected"){
+			return <CloudOffRounded />
 		} else if(status === "error"){
 			return <ErrorRounded />
 		} else {

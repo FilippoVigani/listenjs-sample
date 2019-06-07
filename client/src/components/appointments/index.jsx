@@ -146,6 +146,9 @@ class Demo extends React.PureComponent {
 		this.commitChanges = this.commitChanges.bind(this)
 		this.onEditingAppointmentIdChange = this.onEditingAppointmentIdChange.bind(this)
 		this.onAddedAppointmentChange = this.onAddedAppointmentChange.bind(this)
+		this.onAppointmentMetaChange = ({ data, target }) => {
+			this.setState({ appointmentMeta: { data, target } })
+		}
 		this.appointmentForm = connectProps(AppointmentFormContainer, () => {
 			const {
 				editingFormVisible, editingAppointmentId, data, addedAppointment,
@@ -298,9 +301,14 @@ class Demo extends React.PureComponent {
 			endDayHour,
 			currentViewName,
 			loading,
-			status
+			status,
+			appointmentMeta
 		} = this.state
 		const {classes} = this.props
+		const latestAppointmentMeta = {
+			...appointmentMeta,
+			data: data.find(appointment => appointment.id === (appointmentMeta ? appointmentMeta.data.id : null))
+		}
 
 		return (
 			<Paper>
@@ -328,6 +336,8 @@ class Demo extends React.PureComponent {
 					</Toolbar>
 					<AppointmentTooltip
 						contentComponent={TooltipContent}
+						appointmentMeta={latestAppointmentMeta}
+						onAppointmentMetaChange={this.onAppointmentMetaChange}
 						showOpenButton
 						showCloseButton
 						showDeleteButton />
