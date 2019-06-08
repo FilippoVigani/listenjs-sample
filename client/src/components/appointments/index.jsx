@@ -16,14 +16,14 @@ import {
 	DragDropProvider,
 	DateNavigator
 } from '@devexpress/dx-react-scheduler-material-ui'
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
+import List from '@material-ui/core/List'
+import ListItem from '@material-ui/core/ListItem'
+import ListItemIcon from '@material-ui/core/ListItemIcon'
+import ListItemText from '@material-ui/core/ListItemText'
 import {connectProps} from '@devexpress/dx-react-core'
 import {withStyles} from '@material-ui/core/styles'
 import Dialog from '@material-ui/core/Dialog'
-import AccessTime from '@material-ui/icons/AccessTime';
+import AccessTime from '@material-ui/icons/AccessTime'
 import LinearProgress from '@material-ui/core/LinearProgress'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
@@ -33,8 +33,15 @@ import Button from '@material-ui/core/Button'
 import Fab from '@material-ui/core/Fab'
 import Notes from '@material-ui/icons/Notes'
 import AddIcon from '@material-ui/icons/Add'
-import moment from 'moment';
-import {listen} from "@filippovigani/listenjs/listen"
+import moment from 'moment'
+import {
+	listen,
+	onError,
+	onConnected,
+	onConnecting,
+	onDisconnected,
+	onReconnecting
+} from "@filippovigani/listenjs/listen"
 import AppointmentFormContainer from '../appointment_form'
 import StatusIndicator from "../status_indicator/status_indicator"
 
@@ -48,10 +55,10 @@ const toolbarStyles = {
 		bottom: 0,
 		left: 0,
 	},
-};
+}
 
-const ToolbarWithLoading = withStyles(toolbarStyles, { name: 'Toolbar' })(
-	({ children, classes, ...restProps }) => (
+const ToolbarWithLoading = withStyles(toolbarStyles, {name: 'Toolbar'})(
+	({children, classes, ...restProps}) => (
 		<div className={classes.toolbarRoot}>
 			<Toolbar.Root {...restProps}>
 				{children}
@@ -59,8 +66,7 @@ const ToolbarWithLoading = withStyles(toolbarStyles, { name: 'Toolbar' })(
 			<LinearProgress className={classes.progress} />
 		</div>
 	),
-);
-
+)
 
 
 const styles = theme => ({
@@ -85,8 +91,8 @@ const styles = theme => ({
 	},
 })
 
-const TooltipContent = withStyles(styles, { name: 'TooltipContent' })(
-	({ classes, appointmentData, ...restProps }) => {
+const TooltipContent = withStyles(styles, {name: 'TooltipContent'})(
+	({classes, appointmentData, ...restProps}) => {
 		return (
 			<AppointmentTooltip.Content {...restProps} className={classes.tooltipContent}>
 				<List>
@@ -110,9 +116,9 @@ const TooltipContent = withStyles(styles, { name: 'TooltipContent' })(
 					</ListItem>
 				</List>
 			</AppointmentTooltip.Content>
-		);
+		)
 	},
-);
+)
 
 /* eslint-disable-next-line react/no-multi-comp */
 class Demo extends React.PureComponent {
@@ -137,17 +143,17 @@ class Demo extends React.PureComponent {
 		this.toggleEditingFormVisibility = this.toggleEditingFormVisibility.bind(this)
 
 		this.currentViewNameChange = (currentViewName) => {
-			this.setState({ currentViewName});
-		};
+			this.setState({currentViewName})
+		}
 		this.currentDateChange = (currentDate) => {
-			this.setState({ currentDate});
-		};
+			this.setState({currentDate})
+		}
 
 		this.commitChanges = this.commitChanges.bind(this)
 		this.onEditingAppointmentIdChange = this.onEditingAppointmentIdChange.bind(this)
 		this.onAddedAppointmentChange = this.onAddedAppointmentChange.bind(this)
-		this.onAppointmentMetaChange = ({ data, target }) => {
-			this.setState({ appointmentMeta: { data, target } })
+		this.onAppointmentMetaChange = ({data, target}) => {
+			this.setState({appointmentMeta: {data, target}})
 		}
 		this.appointmentForm = connectProps(AppointmentFormContainer, () => {
 			const {
@@ -168,6 +174,16 @@ class Demo extends React.PureComponent {
 	}
 
 	componentDidMount() {
+		onError(() =>
+			this.setState({status: "error"}))
+		onConnected(() =>
+			this.setState({status: "connected"}))
+		onConnecting(() =>
+			this.setState({status: "connecting"}))
+		onReconnecting(() =>
+			this.setState({status: "reconnecting"}))
+		onDisconnected(() =>
+			this.setState({status: "disconnected"}))
 		this.loadData()
 	}
 
@@ -198,10 +214,10 @@ class Demo extends React.PureComponent {
 					loading: false,
 				})
 			})
-			.catch(() => this.setState({ loading: false }))
+			.catch(() => this.setState({loading: false}))
 	}
 
-	updateData(appointment){
+	updateData(appointment) {
 		fetch(`/api/appointments/${appointment.id}`, {
 			method: 'PUT',
 			headers: {
@@ -211,7 +227,7 @@ class Demo extends React.PureComponent {
 		})
 	}
 
-	postData(appointment){
+	postData(appointment) {
 		fetch("/api/appointments", {
 			method: 'POST',
 			headers: {
@@ -221,7 +237,7 @@ class Demo extends React.PureComponent {
 		})
 	}
 
-	deleteData(appointmentId){
+	deleteData(appointmentId) {
 		fetch(`/api/appointments/${appointmentId}`, {
 			method: 'DELETE'
 		})
@@ -327,7 +343,7 @@ class Demo extends React.PureComponent {
 					<MonthView />
 					<Appointments />
 					<Toolbar
-						{...loading ? { rootComponent: ToolbarWithLoading } : null}>
+						{...loading ? {rootComponent: ToolbarWithLoading} : null}>
 					</Toolbar>
 					<AppointmentTooltip
 						contentComponent={TooltipContent}
@@ -345,7 +361,7 @@ class Demo extends React.PureComponent {
 					<DragDropProvider />
 				</Scheduler>
 
-				<StatusIndicator status={status ? status.status : ""} />
+				<StatusIndicator status={status} />
 
 				<Dialog
 					open={confirmationVisible}
@@ -355,8 +371,18 @@ class Demo extends React.PureComponent {
 						<DialogContentText>Are you sure you want to delete this appointment?</DialogContentText>
 					</DialogContent>
 					<DialogActions>
-						<Button onClick={this.toggleConfirmationVisible} color="primary" variant="outlined">Cancel</Button>
-						<Button onClick={this.commitDeletedAppointment} color="secondary" variant="outlined">Delete</Button>
+						<Button
+							onClick={this.toggleConfirmationVisible}
+							color="primary"
+							variant="outlined">
+							Cancel
+						</Button>
+						<Button
+							onClick={this.commitDeletedAppointment}
+							color="secondary"
+							variant="outlined">
+							Delete
+						</Button>
 					</DialogActions>
 				</Dialog>
 
