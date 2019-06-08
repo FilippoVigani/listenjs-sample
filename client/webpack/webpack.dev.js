@@ -40,7 +40,7 @@ module.exports = {
 				secure: false
 				//changeOrigin: true
 			},
-			'/socket.io': {
+			'/': {
 				target: 'http://localhost:8000',
 				ws: true
 			}

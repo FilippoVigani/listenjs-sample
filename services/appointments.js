@@ -9,7 +9,7 @@ module.exports = function (fastify, opts, next) {
 
 	fastify.post('/appointments', function (request, reply) {
 		const appointment = {
-			id: appointments.map(it => it.id).reduce((prev, next) => Math.max(prev, next) + 1),
+			id: appointments.map(it => it.id).reduce((prev, next) => Math.max(prev, next) + 1, 0),
 			title: request.body.title,
 			startDate: request.body.startDate,
 			endDate: request.body.endDate,
@@ -41,7 +41,7 @@ module.exports = function (fastify, opts, next) {
 	fastify.delete('/appointments/:id', function (request, reply) {
 		const index = appointments.findIndex(it => it.id === +request.params.id)
 		if (index === -1) return reply.send(404)
-		appointments.splice(index)
+		appointments.splice(index, 1)
 		reply.notifyDelete()
 		reply.notifyParent(appointments)
 		reply.send(200)

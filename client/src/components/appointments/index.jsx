@@ -189,11 +189,6 @@ class Demo extends React.PureComponent {
 					data,
 					loading: false,
 				})
-			},
-			status => {
-				this.setState({
-					status: status,
-				})
 			})
 		fetch(`/api/appointments`)
 			.then(response => response.json())
