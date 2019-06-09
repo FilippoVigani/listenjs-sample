@@ -343,8 +343,7 @@ class Demo extends React.PureComponent {
 					<MonthView />
 					<Appointments />
 					<Toolbar
-						{...loading ? {rootComponent: ToolbarWithLoading} : null}>
-					</Toolbar>
+						{...loading ? {rootComponent: ToolbarWithLoading} : null} />
 					<AppointmentTooltip
 						contentComponent={TooltipContent}
 						appointmentMeta={latestAppointmentMeta}
