@@ -50,7 +50,7 @@ app.register(require('./app.js'))
 
 // Start listening.
 const port = process.env.PORT || 8000
-const address = process.env.ADDRESS || "127.0.0.1"
+const address = process.env.ADDRESS || "0.0.0.0"
 app.listen(port, address, (err) => {
 	if (err) {
 		app.log.error(err)
