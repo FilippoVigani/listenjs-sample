@@ -46,8 +46,7 @@ import AppointmentFormContainer from '../appointment_form'
 import StatusIndicator from "../status_indicator/status_indicator"
 
 const BASE_URI = "/api/appointments"
-//const BASE_URI = "site181913.tw.cs.unibo.it/api/appointments"
-const HTTP = "http://"
+//const BASE_URI = "http://site181913.tw.cs.unibo.it/api/appointments"
 
 const toolbarStyles = {
 	toolbarRoot: {
@@ -210,7 +209,7 @@ class Demo extends React.PureComponent {
 					loading: false,
 				})
 			})
-		fetch(`${HTTP}${BASE_URI}`)
+		fetch(`${BASE_URI}`)
 			.then(response => response.json())
 			.then((data) => {
 				this.setState({
@@ -222,7 +221,7 @@ class Demo extends React.PureComponent {
 	}
 
 	updateData(appointment) {
-		fetch(`${HTTP}${BASE_URI}/${appointment.id}`, {
+		fetch(`${BASE_URI}/${appointment.id}`, {
 			method: 'PUT',
 			headers: {
 				"Content-Type": "application/json",
@@ -232,7 +231,7 @@ class Demo extends React.PureComponent {
 	}
 
 	postData(appointment) {
-		fetch(`${HTTP}${BASE_URI}`, {
+		fetch(`${BASE_URI}`, {
 			method: 'POST',
 			headers: {
 				"Content-Type": "application/json",
@@ -242,7 +241,7 @@ class Demo extends React.PureComponent {
 	}
 
 	deleteData(appointmentId) {
-		fetch(`${HTTP}${BASE_URI}/${appointmentId}`, {
+		fetch(`${BASE_URI}/${appointmentId}`, {
 			method: 'DELETE'
 		})
 	}
